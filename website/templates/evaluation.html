@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}test Home{% endblock %}
+{% block content
+%}
+<!--{{ concept.Transaction_name }}-->
+<!--{{ value }}-->
+<br>
+<br>
+
+<div class="row">
+        <div class="col">
+             <h2>Evaluation Process</h2>
+        </div>
+        <div class="col">
+            <form action = "/" method="GET">
+                <div class="col-md-12 text-right">
+    <!--                <button type="button" class="btn btn-primary">Cancel</button>-->
+    <!--                <button type="button" class="btn btn-warning ml-2">Save</button>-->
+
+                         <button class="btn btn-primary" type="button" id="pause" >
+                            {% if auto == True %}
+                               Pause Evaluation
+                            {% else %}
+                                Auto. Evaluation
+                            {% endif %}
+                         </button>
+
+                        <button class="btn btn-primary" type="submit" style="">New Query</button>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+<!--<div class="row ">-->
+<!--    <div class="col-sm">-->
+<!--        <h2>Evaluation Process</h2>-->
+<!--    </div>-->
+<!--    <div class="col-sm">-->
+
+<!--    </div>-->
+<!--    <div class="col-sm text-right">-->
+<!--         &lt;!&ndash;<button class="btn btn-primary" type="button">Pause evaluation</button>&ndash;&gt;-->
+<!--         <form action = "/" method="GET">-->
+<!--            <button class="btn btn-primary" type="button">New Query</button>-->
+<!--         </form>-->
+<!--    </div>-->
+<!--</div>-->
+<hr>
+
+
+<div class="row p-4 pb-0 pe-lg-0 pt-lg-5  rounded-3 border shadow-lg query" style="height: 285px;">
+    <div class="col-12">
+        <b>Please check the correctness of the following, using the link below: </b>
+        <!-- (<span style="color: #0011ff">𝑎0</span> ∧ <span style="color: #00ff15">𝑟0</span> ∧ <span style="color: #0011ff">𝑒0</span> ) -->
+    </div>
+    <hr>
+
+    <div class="col-9">
+        <table style="width: 100%">
+            <thead>
+             <th>entity</th>
+           <th>relation</th>
+            <th>value</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td><a href="https://en.wikipedia.org/wiki/{{concept.entity}}">{{concept.entity}} </a></td>
+                <td>{{concept.relation}}</td>
+                <td><a href="https://en.wikipedia.org/wiki/{{concept.value}}">{{concept.value}} </a></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+<!--    <div class="col-5">-->
+<!--        Source: <a href="https://en.wikipedia.org/wiki/"+{{concept.entity}}>{{concept.entity}} </a>-->
+<!--    </div>-->
+    <div class="col-3">
+        <form action = "/evaluate2" method="POST">
+         <input type="submit" id="t_ans" name="ans" value="Correct" class="btn btn-success btn-lg">
+         <input type="submit" id="f_ans" name="ans" value="Incorrect" class="btn btn-danger btn-lg">
+            <input type="hidden" name="auto" id="auto" value="{{ auto }}">
+            <input type="hidden" id="value" value="{{ value }}">
+             <input type="hidden" id="idx" value="{{ idx }}">
+        </form>
+<!--            <button class="btn btn-success btn-lg"  type="submit"><b>Correct</b></button>-->
+<!--            <button class="btn btn-danger btn-lg"  type="submit"><b>Incorrect</b></button>-->
+
+    </div>
+
+
+</div>
+
+
+<!-- <div class="b-example-divider"></div> -->
+<div class="container my-5">
+
+
+    <div class=row>
+        <div class=col-12>
+            <label class="form-label" style=" float: right; font-size: 1.7rem;"><b>So far: </b>{{ idx }} probes</label>
+        </div>
+    </div>
+    <div class=row>
+
+        <div class=col-2></div>
+        <div class=col-8>
+            <label class="form-label" for="email"><b>Query results:</b></label>
+            <div class="row pt-lg-5 align-items-baseline rounded-3 border shadow-lg" style="height: 350px;
+      overflow: scroll;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        {% for name in query_data.name_results.split(',') %}
+                            <th>{{ name.replace("\"", "")  }}</th>
+                        {% endfor %}
+                        <th>Boolean Expression</th>
+                        <th></th>
+
+                    </tr>
+                    </thead>
+                    <tbody overflow:scroll;>
+                    {% for boolean in booleans %}
+                    <tr>
+                        {% for name in boolean.name_results.split(',') %}
+                            <td>{{ name.replace("\"", "")  }}</td>
+                        {% endfor %}
+                        <td>{{ boolean.original_dnf }}</td>
+                        {% if boolean.original_dnf == '0' %}
+                            <td><i class="fa fa-times" style="color: red;"></i></td>
+                        {% elif boolean.original_dnf == '1' %}
+                            <td><i class="fa fa-check" style="color: green;"></i></td>
+                        {% else %}
+                            <td><i class="fa fa-question" style="color: blue;"></i></td>
+                        {% endif %}
+
+                    </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class=col-2></div>
+    </div>
+      <br>
+    <div class=row>
+        <div class=col-2></div>
+        <div class=col-6>
+            <label class="form-label" for="email"><b>Probabilities Info: {{ probability_info|length }}</b></label>
+            <div class="row align-items-baseline rounded-3 border shadow-lg" style="height: 350px;
+  overflow-y: scroll;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>var</th>
+                        <th>NELL Prob.</th>
+                        <th>Prob.</th>
+                        <th>Uncertainty</th>
+                        <th>Utility</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody overflow:scroll;>
+                    {% for info in probability_info %}
+                        {% if info.name == concept.Transaction_name %}
+                            <tr bgcolor="yellow">
+                        {% else %}
+                            <tr>
+                        {% endif %}
+                                <td>{{ info.name }} </td>
+                                    {% if info.nell < 0 %}
+                                        <td> - </td>
+                                    {% else %}
+                                        <td> {{ info.nell }} </td>
+                                    {% endif %}
+                                <td> {{ info.probability }} </td>
+                                <td>{{ info.uncertainty }}</td>
+                                <td>{{ info.utility }}</td>
+                            </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class=col-2></div>
+    </div>
+
+
+    <br>
+    <!-- <div class="row" style="float: right;">
+
+      <button type="button" class="btn btn-primary right">Start Evaluation</button>
+    </div>  -->
+</div>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+    {% block title %}test Home{% endblock %}
+{% block content
+%}
+<br>
+<h1 align="center">Information Extraction Demo</h1>
+<ul class="list-group list-group-flush" id="notes">
+
+</ul>
+
+<main>
+  <!-- <div class="b-example-divider"></div> -->
+  <div class="container">
+
+     {% for q in queries %}
+       <input type="hidden" id="{{q.id}}_d" value="{{ q.description }}"></input>
+       <input type="hidden" id="{{q.id}}_b" value="{{  q.body }}"></input>
+     {% endfor %}
+       <form action = "/evaluate1" method="POST">
+    <div class="col-12">
+
+            <label for="email" class="form-label">Please, type your SQL query:</label>
+            <div class="input-group mb-3">
+                <select class="form-control" id="queryid" onchange="show_details()" aria-label="Default select example">
+                  <option selected>Open this select menu</option>
+                    {% for q in queries %}
+                        <option  value={{ q.id }}>{{ q.short_des }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="hidden" name="query" id="query"  value="">
+    <!--            <input type="text" class="form-control" id="email" placeholder="SELECT * FROM ...">-->
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<!--                <div class="input-group-append">-->
+<!--                    <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--                </div>-->
+          </div>
+
+    </div>
+<br>
+      <div class="container" >
+
+<!--  <label for="email" class="form-label">Query results:</label>-->
+    <div class=" p-4 pb-0 pe-lg-0 pt-lg-5 rounded-3 border shadow-lg"  style="height: 500px;">
+        <b id = "description" style="color: green"></b>
+        <br><br>
+        <div>
+<!--        <img src="./images/q8.png">-->
+        <img id = "body"></img>
+                </div>
+
+    </div>
+<br>
+ <div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="auto" checked>
+  <label class="form-check-label" for="flexSwitchCheckChecked">Automatic evaluation</label>
+</div>
+<button type="submit" class=" btn btn-primary right" style="float: right;" >Start Evaluation</button>
+
+  </div>
+            </form>
+  </div>
+
+
+
+
+</main>
+
+
+{% endblock %}
+

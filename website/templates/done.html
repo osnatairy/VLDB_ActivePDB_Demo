@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}test Home{% endblock %}
+{% block content
+%}
+<br><br>
+<div class="row ">
+    <div class="col">
+        <h2>Evaluation Process was Done in {{ idx }} probes.</h2>
+    </div>
+    <div class="col float-right">
+             <form action = "/" method="GET">
+                <button class="btn btn-primary" type="submit" style="">New Query</button>
+             </form>
+    </div>
+</div>
+<hr>
+
+<!-- <div class="b-example-divider"></div> -->
+    <div class=row>
+
+        <div class=col-12>
+            <label class="form-label" for="email"><b>Query results:</b></label>
+            <div class="row pt-lg-5 align-items-baseline rounded-3 border shadow-lg" >
+                <table class="table">
+                    <thead>
+                    <tr>
+                        {% for name in query_data.name_results.split(',') %}
+                            <th>{{ name.replace("\"", "")  }}</th>
+                        {% endfor %}
+
+                        <th></th>
+
+                    </tr>
+                    </thead>
+                    <tbody overflow:scroll;>
+                    {% for boolean in booleans %}
+                    <tr>
+                        {% for name in boolean.name_results.split(',') %}
+                            <td>{{ name.replace("\"", "")  }}</td>
+                        {% endfor %}
+
+                        {% if boolean.original_dnf == '0' %}
+                            <td><i class="fa fa-times" style="color: red;"></i></td>
+                        {% elif boolean.original_dnf == '1' %}
+                            <td><i class="fa fa-check" style="color: green;"></i></td>
+                        {% else %}
+                            <td><i class="fa fa-question" style="color: blue;"></i></td>
+                        {% endif %}
+
+                    </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <br>
+    <!-- <div class="row" style="float: right;">
+
+      <button type="button" class="btn btn-primary right">Start Evaluation</button>
+    </div>  -->
+
+
+{% endblock %}
